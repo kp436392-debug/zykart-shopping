@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="ZyKart Online Fashion Store">
+<title>ZyKart | Fashion Store</title>
+
+<style>
+:root{
+--ink:#171717;
+--muted:#666;
+--accent:#e85d3f;
+--cream:#faf7f2;
+--line:#eee;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;color:var(--ink);background:#fff}
+button,input,select{font:inherit}
+button{cursor:pointer}
+
+.top{background:#171717;color:#fff;text-align:center;padding:9px;font-size:12px}
+header{display:flex;align-items:center;justify-content:space-between;padding:18px 6%;border-bottom:1px solid var(--line);gap:15px;flex-wrap:wrap}
+.logo{font-size:28px;font-weight:900}
+.logo span{color:var(--accent)}
+nav{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+nav button{border:0;background:none;font-weight:bold}
+.cart{background:var(--ink);color:#fff;padding:11px 16px;border-radius:24px}
+.search{padding:11px 13px;border:1px solid #ddd;border-radius:22px;min-width:190px}
+
+.hero{margin:24px 6%;border-radius:18px;min-height:330px;background:linear-gradient(90deg,rgba(0,0,0,.72),rgba(0,0,0,.08)),url('https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1600&q=85') center/cover;display:flex;align-items:center;color:#fff;padding:40px}
+.hero-content{max-width:480px}
+.eyebrow{font-size:12px;letter-spacing:2px;color:#ffd8ce;font-weight:bold}
+h1{font-size:clamp(34px,5vw,58px);line-height:1.03;margin:12px 0}
+.hero p{line-height:1.6}
+.primary{display:inline-block;background:var(--accent);color:#fff;border:0;padding:13px 20px;border-radius:5px;font-weight:bold;text-decoration:none;margin-top:8px}
+
+.section{padding:22px 6% 48px}
+.section-head{display:flex;justify-content:space-between;align-items:end;gap:12px;flex-wrap:wrap}
+h2{font-size:28px;margin:0 0 8px}
+.sub{color:var(--muted);font-size:14px}
+.filters{display:flex;gap:9px;flex-wrap:wrap;margin:22px 0}
+.filters button{padding:10px 16px;border:1px solid #ddd;background:#fff;border-radius:22px}
+.filters button.active,.filters button:hover{background:var(--ink);color:#fff}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
+.card{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
+.card img{width:100%;height:245px;object-fit:cover;background:var(--cream);display:block}
+.info{padding:14px}
+.tag{font-size:11px;color:var(--accent);font-weight:bold;text-transform:uppercase}
+.name{font-weight:bold;margin:7px 0}
+.price{font-weight:800}
+.old{font-size:13px;color:#999;text-decoration:line-through;margin-left:7px}
+.add{width:100%;padding:11px;margin-top:12px;border:0;background:var(--ink);color:#fff;border-radius:5px;font-weight:bold}
+.add:hover{background:var(--accent)}
+
+#sell{background:#faf7f2;padding:25px;border-radius:12px;margin-top:35px}
+#sell input,#sell select{display:block;width:min(100%,420px);margin:10px auto;padding:12px;border:1px solid #ccc;border-radius:6px}
+#sell button{display:block;margin:15px auto;background:var(--accent);color:#fff;padding:12px 25px;border:0;border-radius:5px}
+#message{text-align:center;color:green}
+
+.notice{background:#fff4ef;padding:14px 6%;font-size:13px;color:#714031}
+footer{background:#171717;color:#fff;padding:34px 6%;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+footer p{color:#bbb;font-size:13px}
+
+#cartPanel{display:none;position:fixed;right:16px;top:80px;width:min(380px,calc(100vw - 32px));max-height:80vh;overflow:auto;background:white;box-shadow:0 8px 35px #0003;border-radius:12px;padding:18px;z-index:5;border:1px solid var(--line)}
+#cartPanel h3{margin-top:0}
+#cartItems{font-size:14px;line-height:1.8}
+.close{float:right;border:0;background:none;font-size:22px}
+.remove{padding:5px 9px;background:#eee;border:0;border-radius:5px}
+.total{font-weight:bold;font-size:19px;margin:15px 0}
+.checkout{width:100%;background:#25D366;color:#fff;padding:13px;border:0;border-radius:6px;font-weight:bold}
+
+@media(max-width:850px){
+.grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.hero{min-height:300px}
+}
+@media(max-width:520px){
+header{padding:15px 5%}
+nav{order:3;width:100%;justify-content:space-between}
+.hero{margin:16px 4%;padding:25px;min-height:300px}
+.section{padding:20px 4% 36px}
+.grid{gap:10px}
+.card img{height:180px}
+.info{padding:10px}
+.name{font-size:14px}
+.search{width:100%}
+}
+</style>
+</head>
+
+<body>
+
+<div class="top">NEW COLLECTION • FASHION FOR EVERYONE • INDIA</div>
+
+<header>
+<div class="logo">Zy<span>Kart</span></div>
+
+<input class="search" id="search" placeholder="कपड़े खोजें..." oninput="render()">
+
+<nav>
+<button onclick="setFilter('All')">Home</button>
+<button onclick="setFilter('Men')">Men</button>
+<button onclick="setFilter('Women')">Women</button>
+<button onclick="document.getElementById('shop').scrollIntoView({behavior:'smooth'})">Shop</button>
+</nav>
+
+<button class="cart" onclick="toggleCart()">Cart (<span id="count">0</span>)</button>
+</header>
+
+<section class="hero">
+<div class="hero-content">
+<div class="eyebrow">STYLE THAT FEELS LIKE YOU</div>
+<h1>Fresh Looks.<br>Everyday Style.</h1>
+<p>Men's aur Women's fashion ki nayi collection dekho. Apna pasandida style chuno.</p>
+<a class="primary" href="#shop">Shop Collection</a>
+</div>
+</section>
+
+<section class="section" id="shop">
+
+<div class="section-head">
+<div>
+<h2>Shop the Collection</h2>
+<p class="sub">Men aur Women dono ke liye fashion</p>
+</div>
+</div>
+
+<div class="filters">
+<button class="active" data-filter="All" onclick="setFilter('All')">All</button>
+<button data-filter="Men" onclick="setFilter('Men')">Men</button>
+<button data-filter="Women" onclick="setFilter('Women')">Women</button>
+<button data-filter="T-Shirts" onclick="setFilter('T-Shirts')">T-Shirts</button>
+<button data-filter="Jeans" onclick="setFilter('Jeans')">Jeans</button>
+<button data-filter="Dresses" onclick="setFilter('Dresses')">Dresses</button>
+</div>
+
+<div class="grid" id="products"></div>
+
+<section id="sell">
+<h2 style="text-align:center">अपना प्रोडक्ट जोड़ें</h2>
+
+<form id="sellForm">
+<input id="pname" placeholder="प्रोडक्ट का नाम" required maxlength="80">
+
+<input id="price" type="number" placeholder="कीमत (₹)" min="1" required>
+
+<input id="photo" type="url" placeholder="फोटो URL (वैकल्पिक)">
+
+<select id="gender">
+<option value="Men">Men</option>
+<option value="Women">Women</option>
+</select>
+
+<button type="submit">प्रोडक्ट जोड़ें</button>
+</form>
+
+<p id="message"></p>
+</section>
+
+</section>
+
+<div class="notice">
+ध्यान दें: प्रोडक्ट और कार्ट इसी ब्राउज़र में सेव होते हैं। WhatsApp पर ऑर्डर भेजने के लिए ग्राहक को WhatsApp में Send दबाना होगा।
+</div>
+
+<footer>
+<div>
+<div class="logo">Zy<span>Kart</span></div>
+<p>Everyday fashion for everyone.</p>
+</div>
+<div>
+<strong>Customer Support</strong>
+<p>Contact: 9456065681</p>
+<p>© 2026 ZyKart. All rights reserved.</p>
+</div>
+</footer>
+
+<div id="cartPanel">
+<button class="close" onclick="toggleCart()">×</button>
+<h3>Your Cart</h3>
+<div id="cartItems">Your cart is empty.</div>
+<div class="total">Total: ₹<span id="total">0</span></div>
+<button class="checkout" onclick="checkout()">WhatsApp पर ऑर्डर करें</button>
+</div>
+
+<script>
+
+const starter=[
+{id:1,name:"Classic White T-Shirt",cat:"Men",type:"T-Shirts",price:499,old:699,img:"https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=700&q=80"},
+{id:2,name:"Casual Denim Jeans",cat:"Men",type:"Jeans",price:999,old:1299,img:"https://images.unsplash.com/photo-1542272604-787c3835535d?auto=format&fit=crop&w=700&q=80"},
+{id:3,name:"Everyday Shirt",cat:"Men",type:"Shirts",price:799,old:999,img:"https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=700&q=80"},
+{id:4,name:"Women's Summer Dress",cat:"Women",type:"Dresses",price:1199,old:1499,img:"https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=700&q=80"},
+{id:5,name:"Women's Casual Top",cat:"Women",type:"Tops",price:599,old:799,img:"https://images.unsplash.com/photo-1551163943-3f6a855d1153?auto=format&fit=crop&w=700&q=80"},
+{id:6,name:"Women's Denim Jeans",cat:"Women",type:"Jeans",price:1099,old:1399,img:"https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&w=700&q=80"},
+{id:7,name:"Men's Hoodie",cat:"Men",type:"Hoodies",price:899,old:1199,img:"https://images.unsplash.com/photo-1556821840-3a63f95609a7?auto=format&fit=crop&w=700&q=80"},
+{id:8,name:"Women's Jacket",cat:"Women",type:"Jackets",price:1399,old:1799,img:"https://images.unsplash.com/photo-1548624149-f6b6e6b8f2d8?auto=format&fit=crop&w=700&q=80"}
+];
+
+function read(key,fallback){
+try{
+return JSON.parse(localStorage.getItem(key)) ?? fallback;
+}catch(e){
+return fallback;
+}
+}
+
+let items=read("zyk_products",starter);
+let cart=read("zyk_cart",[]);
+let filter="All";
+
+function save(){
+localStorage.setItem("zyk_products",JSON.stringify(items));
+localStorage.setItem("zyk_cart",JSON.stringify(cart));
+}
+
+function render(){
+
+let q=document.getElementById("search").value.toLowerCase();
+
+let shown=items.filter(p=>
+(filter==="All" || p.cat===filter || p.type===filter) &&
+p.name.toLowerCase().includes(q)
+);
+
+document.getElementById("products").innerHTML=shown.map(p=>`
+<article class="card">
+<img src="${p.img || 'https://placehold.co/300x200?text=Product'}" alt="${p.name}" loading="lazy">
+<div class="info">
+<div class="tag">${p.cat} / ${p.type}</div>
+<div class="name">${p.name}</div>
+<div>
+<span class="price">₹${p.price}</span>
+${p.old?`<span class="old">₹${p.old}</span>`:""}
+</div>
+<button class="add" onclick="add(${p.id})">Add to Cart</button>
+</div>
+</article>
+`).join("") || "<p>कोई प्रोडक्ट नहीं मिला।</p>";
+
+}
+
+function setFilter(f){
+filter=f;
+document.querySelectorAll(".filters button").forEach(b=>{
+b.classList.toggle("active",b.dataset.filter===f);
+});
+render();
+}
+
+function add(id){
+let product=items.find(p=>p.id===id);
+if(!product)return;
+cart.push({id:product.id,name:product.name,price:Number(product.price)});
+save();
+showCart();
+}
+
+function toggleCart(){
+let panel=document.getElementById("cartPanel");
+panel.style.display=panel.style.display==="block"?"none":"block";
+showCart();
+}
+
+function showCart(){
+
+document.getElementById("count").textContent=cart.length;
+
+document.getElementById("cartItems").innerHTML=cart.length?
+cart.map((p,i)=>`
+<div style="margin:10px 0">
+${p.name} — ₹${p.price}
+<button class="remove" onclick="removeItem(${i})">Remove</button>
+</div>
+`).join(""):"Your cart is empty.";
+
+document.getElementById("total").textContent=
+cart.reduce((s,p)=>s+Number(p.price),0);
+
+}
+
+function removeItem(i){
+cart.splice(i,1);
+save();
+showCart();
+}
+
+document.getElementById("sellForm").addEventListener("submit",function(e){
+
+e.preventDefault();
+
+let name=document.getElementById("pname").value.trim();
+let price=Number(document.getElementById("price").value);
+let img=document.getElementById("photo").value.trim();
+let cat=document.getElementById("gender").value;
+
+if(!name || price<=0)return;
+
+items.unshift({
+id:Date.now(),
+name:name,
+cat:cat,
+type:"Other",
+price:price,
+old:null,
+img:img || "https://placehold.co/300x200?text=Product"
+});
+
+save();
+render();
+this.reset();
+
+document.getElementById("message").textContent="प्रोडक्ट सफलतापूर्वक जुड़ गया!";
+
+});
+
+function checkout(){
+
+if(!cart.length){
+alert("आपका Cart खाली है।");
+return;
+}
+
+let customerName=prompt("अपना नाम लिखें:");
+if(!customerName || !customerName.trim())return;
+
+let customerPhone=prompt("अपना मोबाइल नंबर लिखें:");
+if(!customerPhone || !customerPhone.trim())return;
+
+let customerAddress=prompt("पूरा डिलीवरी पता लिखें:");
+if(!customerAddress || !customerAddress.trim())return;
+
+let total=cart.reduce((s,p)=>s+Number(p.price),0);
+
+let lines=cart.map((p,i)=>
+`${i+1}. ${p.name} — ₹${p.price}`
+).join("\n");
+
+let message=
+`नया ZyKart ऑर्डर
+नाम: ${customerName.trim()}
+मोबाइल: ${customerPhone.trim()}
+पता: ${customerAddress.trim()}
+
+प्रोडक्ट:
+${lines}
+
+कुल: ₹${total}`;
+
+let url="https://wa.me/919456065681?text="+encodeURIComponent(message);
+
+window.open(url,"_blank");
+
+}
+
+render();
+showCart();
+
+</script>
+</body>
+</html>
